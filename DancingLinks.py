@@ -175,26 +175,43 @@ sys.setrecursionlimit(2000)
 # Generate Random Exact Cover Problem
  
 def rand_list(n):
+    """
+        Given an integer n, return a list of length n randomly populated with 0s and 1s.
+    """
     return [random.randint(0,1) for _ in range(n)]
 
 def rand_matrix(n_col, n_row):
     
+    # Generate a random matrix of 0s and 1s of size (n_row, n_col)
     r_mat = [rand_list(n_col) for _ in range(n_row)]
     
+    # Randomly generate an integer "n_set" which will be the total 
+    # number subsets that will form the solution of Exact Cover.
+    # Range of "n_set" is between 10 and one-fourth of the total 
+    # number of elements in the universe of elements.
     n_set = random.randint(10, int(0.25*n_col))
-    set_idx = list(set([random.randint(0, n_row) for _ in range(n_set)]))
-    print(f"No of actual Set {len(set_idx)}")
+    
+    # Randomly generate a list of size "n_set". Remove all duplicates. 
+    # This list will contain the indices of the rows of the "r_mat" which
+    # will form the solution of the Exact Cover problem.
+    set_idx = list(set([random.randint(0, n_row-1) for _ in range(n_set)]))
+    print(f"Size of original set is {n_set} whereas size of actual Set {len(set_idx)}")
+    
+    # For all the rows whose index in "set_idx", set all their element to 0.  
     for i in set_idx:
         r_mat[i] = [0 for _ in range(n_col)]
     
+    # Iterate through all the elements of the universe.
     for i in range(n_col):
+        # Randomly choose a row from "set_idx".
         rand_idx = random.choice(set_idx)
+        # Let that row contain that particular element of the universe.
         r_mat[rand_idx][i] = 1
         
     return r_mat
 
 print("Creating an Exact Cover Problem")
-new_mat = rand_matrix(2048, 2048)
+new_mat = rand_matrix(1024, 1024)
 
 print("Creating Dancing Matrix")
 dl = DancingLinks(new_mat)
